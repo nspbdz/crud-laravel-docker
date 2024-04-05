@@ -1,0 +1,70 @@
+Disini container nya 
+Laravel dan web server jadi 1 
+
+Dan container mysql di tempat berbeda
+
+Buat 1 jaringan di docker agar nanti bisa di gunakan 
+
+network create my-network
+05efb2ce60f7e08b74e936d9e655873358347380c4a9d107055792ddc801b7c7
+
+C:\Users\tunta>docker run --name mysql-container -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=password --network my-network mysql:8
+7b5d004dea03035f624a5923e947f2bb477dfced57f1f980b5ca36d17783c646
+
+ --network my-network disini membuat container mysql agar terhubung dengan 1 jaringan yang sama 
+
+Lalu di docker compose 
+
+version: "3.7"
+services:
+  app:
+    build:
+      args:
+        user: sammy
+        uid: 1000
+      context: ./
+      dockerfile: Dockerfile
+    image: testingan
+    container_name: testingan-app
+    restart: unless-stopped
+    working_dir: /var/www/
+    volumes:
+      - ./:/var/www
+    networks:
+      - my-network
+
+
+  nginx:
+    image: nginx:alpine
+    container_name: testingan-nginx
+    restart: unless-stopped
+    ports:
+      - 8000:80
+    volumes:
+      - ./:/var/www
+      - ./docker-compose/nginx:/etc/nginx/conf.d/
+    networks:
+      - my-network
+
+
+networks:
+  my-network:
+    external: true
+
+
+
+
+Menggunakan networks my-network tadi yang sudah di create di awal 
+
+Di env
+
+DB_CONNECTION=mysql
+DB_HOST=mysql-container
+DB_PORT=3306
+DB_DATABASE=tests
+DB_USERNAME=root
+DB_PASSWORD=password
+
+
+Sesuaikan dengan database mysql 
+

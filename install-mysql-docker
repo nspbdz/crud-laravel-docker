@@ -1,0 +1,20 @@
+
+install mysql di docker sebagai 1 container sendiri 
+
+docker pull mysql
+docker run --name mysql -d -p 3307:3306 -e MYSQL_ROOT_PASSWORD=112  -v mysql:/var/lib/mysql mysql:8
+
+
+penjelasan
+--name mysql (bisa disesuaikan nama container )
+mysql:/var/lib/mysql storage dari docker bisa disesuaikan directory maupun penamaan di dalam lib
+
+
+
+karena belum bind address
+ docker run -d --name my-mysql-container -p 3309:3309 -e MYSQL_ROOT_PASSWORD=password --publish 3308:3308 mysql:latest --bind-address=0.0.0.0
+
+
+menambahkan network agar sama dengan container yang diinginakan
+
+ docker run --name mysql -d -p 3307:3306 -e MYSQL_ROOT_PASSWORD=112 -v mysql:/var/lib/mysql --network=47ea98fb7f8dca4eca08470becf35f5f4d20d598c8f8c71865719bb7c45b57b7 mysql:8
